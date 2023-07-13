@@ -1,0 +1,119 @@
+﻿@using SchedularCalendar.Authorisation;
+@model SchedularCalendar.Models.Event
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Event</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatorId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatorId)
+        </dd>
+    </dl>
+    <label class="col-md-4 control-label">Event Status</label>
+    <div class="col-md-6">
+        @if (Model.Status == EventStatus.Approved)
+        {
+            <span class="badge bg-success">@Html.DisplayFor(model => model.Status)</span>
+        }
+        @if (Model.Status == EventStatus.Rejected)
+        {
+            <span class="badge bg-danger">@Html.DisplayFor(model => model.Status)</span>
+        }
+        @if (Model.Status == EventStatus.Pending)
+        {
+            <span class="badge bg-warning">@Html.DisplayFor(model => model.Status)</span>
+        }
+    </div>
+    <br />
+    <div class="col-md-6">
+        @{
+            var isManager = User.IsInRole(Constants.ManagerRole);
+            var isAdmin = User.IsInRole(Constants.AdminRole);
+
+            if (isManager != true && isAdmin != true)
+            {
+                //Do not show button.
+            }
+            else
+            {
+                @if (Model.Status == EventStatus.Rejected)
+                {   <form style="display:inline" method="post">
+                    <input hidden name="id" value="@Model.Id">
+                    <input hidden name="status" value="@EventStatus.Approved">
+                    <button type="submit" class="btn btn-success">Approve and Update</button>
+                    </form>
+                    <form style="display:inline" method="post">
+                        <input hidden name="id" value="@Model.Id">
+                        <input hidden name="status" value="@EventStatus.Pending">
+                        <button type="submit" class="btn btn-warning">Revert to Pending Status</button>
+                    </form>
+                }else if (Model.Status == EventStatus.Approved)
+                {
+                    <form style="display:inline" method="post">
+                    <input hidden name="id" value="@Model.Id">
+                    <input hidden name="status" value="@EventStatus.Rejected">
+                    <button type="submit" class="btn btn-danger">Reject and Update</button>
+                    </form>
+                    <form style="display:inline" method="post">
+                        <input hidden name="id" value="@Model.Id">
+                        <input hidden name="status" value="@EventStatus.Pending">
+                        <button type="submit" class="btn btn-warning">Revert to Pending Status</button>
+                    </form>
+                }else if (Model.Status == EventStatus.Pending)
+                {
+                    <form style="display:inline" method="post">
+                        <input hidden name="id" value="@Model.Id">
+                        <input hidden name="status" value="@EventStatus.Approved">
+                        <button type="submit" class="btn btn-success">Approve and Update</button>
+                    </form>
+                    <form style="display:inline" method="post">
+                        <input hidden name="id" value="@Model.Id">
+                        <input hidden name="status" value="@EventStatus.Rejected">
+                        <button type="submit" class="btn btn-danger">Reject and Update</button>
+                    </form>
+                }
+            }
+        }
+    </div>
+</div>
+<div>
+    @if (isManager != true && isAdmin != true)
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    }
+    <a asp-action="Index">Back to List</a>
+</div>

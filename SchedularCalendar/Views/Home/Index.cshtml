@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridYear',
+            events: @Html.Raw(ViewData["Events"]),
+        });
+        calendar.render();
+    });
+
+</script>
+
+
+<div id='calendar'></div>

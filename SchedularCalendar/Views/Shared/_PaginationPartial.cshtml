@@ -1,0 +1,36 @@
+﻿@model SchedularCalendar.Helpers.PagerHelper
+
+<div class="container">
+    @if (Model.TotalPages > 0)
+    {
+        <ul class="pagination justify-content-end">
+
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Events" asp-action="Index" asp-route-pg="1">First Page</a>
+                </li>
+                <li>
+                    <a class="page-link" asp-controller="Events" asp-action="Index" asp-route-pg="@(Model.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+
+            @for (var pge = Model.StartPage; pge <= Model.EndPage; pge++)
+            {
+                <li class="page-item @(pge == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-controller="Events" asp-action="Index" asp-route-pg="@pge"> @pge </a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Events" asp-action="Index" asp-route-pg="@(Model.CurrentPage + 1)">Next</a>
+                </li>
+                <li>
+                    <a class="page-link" asp-controller="Events" asp-action="Index" asp-route-pg="@(Model.TotalPages)">Last Page</a>
+                </li>
+            }
+        </ul>
+    }
+</div>
